@@ -1,8 +1,8 @@
-chess: main.o ChessBoard.o ChessPiece_Impl.o ChessPiece.o
-	g++ -Wall main.o ChessBoard.o ChessPiece_Impl.o ChessPiece.o
+chess: ChessMain.o ChessBoard.o ChessPiece_Impl.o ChessPiece.o
+	g++ -Wall ChessMain.o ChessBoard.o ChessPiece_Impl.o ChessPiece.o -o chess
 
-main.o: main.cpp ChessBoard.h ChessPiece_Impl.h ChessPiece.h
-	g++ -Wall -g -c main.cpp
+ChessMain.o: ChessMain.cpp ChessBoard.hpp ChessPiece_Impl.hpp ChessPiece.hpp errors.hpp
+	g++ -Wall -g -c ChessMain.cpp
 
 ChessBoard.o: ChessBoard.cpp ChessBoard.hpp
 	g++ -Wall -g -c ChessBoard.cpp ChessBoard.hpp

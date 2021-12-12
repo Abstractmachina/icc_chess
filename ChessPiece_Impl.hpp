@@ -1,108 +1,83 @@
 #ifndef CHESSPIECEIMPL_H
 #define CHESSPIECEIMPL_H
 
+#include <iostream>
+
 #include "ChessPiece.hpp"
+#include "errors.hpp"
 
 
 //===============   BISHOP    ================
 class Bishop : public ChessPiece {
-    private:
-        /* data */
-    public:
-        Bishop(/* args */);
+public:
+    using ChessPiece::ChessPiece;
 
-        void override move();
+    void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    std::string getType() const override { return "Bishop"; }
 };
 
 
 //===============   KING    ================
-class King : public ChessPiece
-{
-private:
-    /* data */
+class King : public ChessPiece {
 public:
-    King(/* args */);
-    ~King();
+    using ChessPiece::ChessPiece; 
+    
+    void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    std::string getType() const override { return "King"; }
 };
 
-King::King(/* args */)
-{
-}
-
-King::~King()
-{
-}
 
 //===============   KNIGHT    ================
-class Knight : ChessPiece
-{
-private:
-    /* data */
+class Knight : public ChessPiece {
 public:
-    Knight(/* args */);
-    ~Knight();
+    using ChessPiece::ChessPiece;
+
+    void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    std::string getType() const override { return "Knight"; }
 };
 
-Knight::Knight(/* args */)
-{
-}
-
-Knight::~Knight()
-{
-}
 
 //===============   PAWN    ================
-class Pawn : ChessPiece
-{
-private:
-    /* data */
-public:
-    Pawn(/* args */);
-    ~Pawn();
+class Pawn : public ChessPiece {
+    private:
+        bool m_firstTurn = true;
+
+        bool diagonalCapture(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]);
+        //no error checking. assumes pawn is already moving to correct square
+        bool moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]);
+        bool moveOneSquare(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]);
+    public:
+        using ChessPiece::ChessPiece;
+
+        void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+        bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+        std::string getType() const override { return "Pawn"; }
 };
 
-Pawn::Pawn(/* args */)
-{
-}
-
-Pawn::~Pawn()
-{
-}
 
 //===============   QUEEN    ================
-class Queen : ChessPiece
-{
-private:
-    /* data */
+class Queen : public ChessPiece {
 public:
-    Queen(/* args */);
-    ~Queen();
+    using ChessPiece::ChessPiece;
+
+    void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    std::string getType() const override { return "Queen"; }
 };
 
-Queen::Queen(/* args */)
-{
-}
-
-Queen::~Queen()
-{
-}
 
 //===============   ROOK    ================
-class Rook : ChessPiece
-{
-private:
-    /* data */
+class Rook : public ChessPiece {
 public:
-    Rook(/* args */);
-    ~Rook();
+    using ChessPiece::ChessPiece;
+
+    void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    std::string getType() const override { return "Rook"; }
 };
 
-Rook::Rook(/* args */)
-{
-}
-
-Rook::~Rook()
-{
-}
 
 #endif

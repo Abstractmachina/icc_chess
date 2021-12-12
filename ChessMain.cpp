@@ -1,8 +1,8 @@
-#include"ChessBoard.hpp"
+#include <iostream>
 
-#include<iostream>
+#include "ChessBoard.hpp"
 
-using std::cout;
+using namespace std;
 
 int main() {
 
@@ -12,18 +12,22 @@ int main() {
 
 	ChessBoard cb;
 	cout << '\n';
+	//debug
+	//cb.print();
 
-	cb.submitMove("D7", "D6");
+	cb.submitMove("D7", "D6"); //invalid because its whites turn
 	cout << '\n';
 
-	cb.submitMove("D4", "H6");
+	cb.submitMove("D4", "H6"); //invalid because empty
 	cout << '\n';
 
-	cb.submitMove("D2", "D4");
+	cb.submitMove("D2", "D4"); //valid pawn moves forward 2
+	cout << '\n';
+	
+	cb.submitMove("F8", "B4"); //invalid because pawn is in the way.
 	cout << '\n';
 
-	cb.submitMove("F8", "B4");
-	cout << '\n';
+	
 
 	cout << "=========================\n";
 	cout << "Alekhine vs. Vasic (1931)\n";
@@ -35,11 +39,11 @@ int main() {
 	cb.submitMove("E2", "E4");
 	cb.submitMove("E7", "E6");
 	cout << '\n';
-
+	
 	cb.submitMove("D2", "D4");
 	cb.submitMove("D7", "D5");
 	cout << '\n';
-
+	
 	cb.submitMove("B1", "C3");
 	cb.submitMove("F8", "B4");
 	cout << '\n';
@@ -51,7 +55,7 @@ int main() {
 	cb.submitMove("B2", "C3");
 	cb.submitMove("H7", "H6");
 	cout << '\n';
-
+return 0;
 	cb.submitMove("C1", "A3");
 	cb.submitMove("B8", "D7");
 	cout << '\n';
