@@ -25,6 +25,8 @@ public:
     
     void move(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) override;
     bool isInCheck(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
+    /*queries entire board to see if any pieces are putting king in check.*/
+    bool kingScan(ChessPiece* board[NUM_TILE][NUM_TILE]) override;
     std::string getType() const override { return "King"; }
 };
 

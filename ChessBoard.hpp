@@ -10,12 +10,14 @@
 
 class ChessBoard {
 private:
-    static int const MAX_TILE_NUM = 8;
+    static int const NUM_TILES = 8;
     PlayerColor m_playerTurn = WHITE;
     //tiles of board. contains pointer to piece or nullptr if empty.
-    ChessPiece* m_board[MAX_TILE_NUM][MAX_TILE_NUM];
-    bool whiteCheck = false;
-    bool blackCheck = false;
+    ChessPiece* m_board[NUM_TILES][NUM_TILES];
+    /*true if in check. 
+    need to be switched tp false to execute next move*/
+    bool m_whiteCheck = false; 
+    bool m_blackCheck = false;
 public:
     ChessBoard();
     ~ChessBoard(); //TODO: destruct tiles. 

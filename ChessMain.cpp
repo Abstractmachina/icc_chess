@@ -55,7 +55,7 @@ int main() {
 	cb.submitMove("B2", "C3");
 	cb.submitMove("H7", "H6");
 	cout << '\n';
-return 0;
+
 	cb.submitMove("C1", "A3");
 	cb.submitMove("B8", "D7");
 	cout << '\n';
@@ -78,6 +78,6 @@ return 0;
 
 	cb.submitMove("D3", "G6");
 	cout << '\n';
-
+return 0;
 	return 0;
 }
