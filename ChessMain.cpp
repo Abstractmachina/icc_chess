@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "ChessBoard.hpp"
+#include "ChessBoard.h"
 
 using namespace std;
 
@@ -12,9 +12,7 @@ int main() {
 
 	ChessBoard cb;
 	cout << '\n';
-	//debug
-	//cb.print();
-
+	
 	cb.submitMove("D7", "D6"); //invalid because its whites turn
 	cout << '\n';
 

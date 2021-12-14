@@ -1,4 +1,4 @@
-#include "ChessBoard.hpp"
+#include "ChessBoard.h"
 #include "errors.hpp"
 
 using namespace std;
@@ -17,36 +17,61 @@ void ChessBoard::submitMove(string source, string destination)
         checkValidInput(source, "submitMove()");
         checkValidInput(destination, "submitMove()");
     } catch ( const exception& e) {
-        cerr << e.what() << endl;
+        cerr << e.what();
         return;
     }
     //convert to int
     int srcPos[2] = { source[0] - 'A', source[1] - '1' };
     int destPos[2] = { destination[0] - 'A', destination[1] - '1' };
     
-    //cerr <<"whitecheck: " << m_whiteCheck << endl;
-    //cerr <<"blackcheck: " << m_blackCheck << endl;
-    
-    ChessPiece* currentPiece = nullptr;
+    ChessPiece* selected = nullptr;
     try {
         //check which piece is on source tile
-        currentPiece = getPiece(srcPos[0], srcPos[1]);
+        selected = getPiece(srcPos[0], srcPos[1]);
         //check if correct player turn
-        checkCorrectPlayer(currentPiece);
+        checkCorrectPlayer(selected);
     } catch (const exception& e) {
         cerr <<e.what();
         return;
     }
+
     //attempt move
-    cerr << "move: " << source << "->" << destination << endl;
-    try { 
-         currentPiece->move(destPos[0], destPos[1], m_board);
-    } catch (const exception& e) {
-        cerr << e.what();
+
+    //check if valid move
+    if (!selected->isValidMove(destPos[0], destPos[1], m_board)) {
+        char msg[48];
+        snprintf(msg, sizeof(msg), "%s's %s cannot move to %c%c\n",
+        selected->getColorString().c_str(), selected->getType().c_str(), destination[0], destination[1]);
+        cerr << msg << endl;
         return;
     }
+
+    //peek
+    ChessPiece* destContent = nullptr;
+    peekMove(selected, srcPos, destPos, destContent);
+
+    //if in check, query if move resolves check.
+    if ((m_whiteCheck && m_playerTurn == WHITE) || (m_blackCheck && m_playerTurn == BLACK)) {
+        
+        //if move does not resolve check, undo. 
+        if (findKing(m_playerTurn)->kingScan(m_board)) {
+            char msg[48];
+            snprintf(msg, sizeof(msg),
+            "Illegal move. %s's King is still in check.\n",
+            selected->getColorString().c_str());
+            //reverse move
+            undoMove(selected, srcPos, destPos, destContent);
+            cerr <<msg << endl;
+            return;
+        }
+        //if check resolved, unflag and commit move.
+        (m_playerTurn == WHITE) ? m_whiteCheck = false : m_blackCheck = false;
+    }
+
+    commitMove(selected, srcPos, destPos, destContent);
+
     //see if new move puts opponent in check
-    if (currentPiece->isInCheck(m_board)) {
+    if (selected->opponentIsChecked(m_board)) {
         if (m_playerTurn == WHITE) {
             m_blackCheck = true;
             cerr << "Black";
@@ -57,21 +82,81 @@ void ChessBoard::submitMove(string source, string destination)
         }
         cerr << " is in check\n";
     }
-
     //toggle playerturn;
-    if (m_playerTurn == WHITE)  m_playerTurn = BLACK;
-    else                        m_playerTurn = WHITE;
+    (m_playerTurn == WHITE) ? m_playerTurn = BLACK : m_playerTurn = WHITE;
+}
+
+void ChessBoard::peekMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& destContent) {
+    destContent = m_board[dest[0]][dest[1]];
+    m_board[dest[0]][dest[1]] = piece;
+    m_board[src[0]][src[1]] = nullptr;
+}
+
+void ChessBoard::undoMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& destContent) {
+    m_board[src[0]][src[1]] = piece;
+    m_board[dest[0]][dest[1]] = destContent;
+}
+
+void ChessBoard::commitMove(ChessPiece* piece, 
+int src[2], int dest[2], ChessPiece*& destContent) {
+    printf("%s's %s moves from %c%c to %c%c", 
+            piece->getColorString().c_str(), 
+            piece->getType().c_str(), 
+            char(src[0] + 'A'), char(src[1] + '1'), 
+            char(dest[0] + 'A'), char(dest[1] + '1'));
+    
+    piece->setPosition(dest);
+    if (destContent != nullptr) {
+        printf(" taking %s's %s", 
+        destContent->getColorString().c_str(), 
+        destContent->getType().c_str());
+        delete destContent;
+    }
+    cerr << endl;
+}
+
+bool ChessBoard::isCheckmated(PlayerColor checkedSide) {
+    auto king = findKing(checkedSide);
+    //check if king can find safety by moving.
+
+    int c = king->getC();
+    int r = king->getR();
+    int src[2] = { c, r }; 
+    for (int col = c-1; col <= c+1; col++) {
+        for (int row = r-1; row <= r+1; row++) {
+            if (
+            col < 0 || col >= NUM_TILES || 
+            row < 0 || row >= NUM_TILES ||
+            (col == c && row == r)          ) continue;
+            int dest[2] = {col, row};
+            ChessPiece* destContent = nullptr;
+            peekMove(king, src, dest, destContent);
+            
+        }
+    }
+    //if not, by taking an opponent.
+    //if not, by blocking path.
+    //if all false -> checkmate!
+
+    return false;
+}
+
+ChessPiece* ChessBoard::findKing(PlayerColor color) {
+    for(int i = 0; i < NUM_TILES; i++){
+        for(int j = 0; j < NUM_TILES; j++) {
+            auto sel = m_board[i][j];
+            if (sel != nullptr && sel->getType() == "King" && sel->getColor() == color)
+                return sel;
+        }
+    }
+    return nullptr;
 }
 
 void ChessBoard::checkCorrectPlayer(ChessPiece const* p) const {
     if (p->getColor() != m_playerTurn)
     {
         string msg = "It is not ";
-        string wrongCol;
-        if (m_playerTurn == WHITE)
-            wrongCol = "Black";
-        else
-            wrongCol = "White";
+        string wrongCol = (m_playerTurn == WHITE) ? "Black" : "White";
         msg += wrongCol;
         msg += "’s turn to move!\n";
         throw Err_WrongPlayer(msg);
@@ -108,29 +193,29 @@ void ChessBoard::resetBoard() {
     m_playerTurn = WHITE;
     //init pieces
     //Kings
-    setTile(new King(WHITE, m_whiteCheck), 'E', '1');
-    setTile(new King(BLACK, m_blackCheck), 'E', '8');
+    setTile(new King(WHITE), 'E', '1');
+    setTile(new King(BLACK), 'E', '8');
     //Queens
-    setTile(new Queen(WHITE, m_whiteCheck), 'D', '1');
-    setTile(new Queen(BLACK, m_blackCheck), 'D', '8');
+    setTile(new Queen(WHITE), 'D', '1');
+    setTile(new Queen(BLACK), 'D', '8');
     //Bishops
-    setTile(new Bishop(WHITE, m_whiteCheck), 'C', '1');
-    setTile(new Bishop(WHITE, m_whiteCheck), 'F', '1');
-    setTile(new Bishop(BLACK, m_blackCheck), 'C', '8');
-    setTile(new Bishop(BLACK, m_blackCheck), 'F', '8');
+    setTile(new Bishop(WHITE), 'C', '1');
+    setTile(new Bishop(WHITE), 'F', '1');
+    setTile(new Bishop(BLACK), 'C', '8');
+    setTile(new Bishop(BLACK), 'F', '8');
     //Knights
-    setTile(new Knight(WHITE, m_whiteCheck), 'B', '1');
-    setTile(new Knight(WHITE, m_whiteCheck), 'G', '1');
-    setTile(new Knight(BLACK, m_blackCheck), 'B', '8');
-    setTile(new Knight(BLACK, m_blackCheck), 'G', '8');
+    setTile(new Knight(WHITE), 'B', '1');
+    setTile(new Knight(WHITE), 'G', '1');
+    setTile(new Knight(BLACK), 'B', '8');
+    setTile(new Knight(BLACK), 'G', '8');
     //Rooks
-    setTile(new Rook(WHITE, m_whiteCheck), 'A', '1');
-    setTile(new Rook(BLACK, m_blackCheck), 'H', '1');
-    setTile(new Rook(WHITE, m_whiteCheck), 'A', '8');
-    setTile(new Rook(BLACK, m_blackCheck), 'H', '8');
+    setTile(new Rook(WHITE), 'A', '1');
+    setTile(new Rook(BLACK), 'H', '1');
+    setTile(new Rook(WHITE), 'A', '8');
+    setTile(new Rook(BLACK), 'H', '8');
     //Pawms
-    for (int i =0; i < 8; i++) setTile(new Pawn(WHITE, m_whiteCheck), char('A' + i), '2');
-    for (int i =0; i < 8; i++) setTile(new Pawn(BLACK, m_blackCheck), char('A' + i), '7');
+    for (int i =0; i < 8; i++) setTile(new Pawn(WHITE), char('A' + i), '2');
+    for (int i =0; i < 8; i++) setTile(new Pawn(BLACK), char('A' + i), '7');
 }
 
 //assign piece to tile. col (A-H) row (1-8)
