@@ -21,7 +21,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                //cerr << msg << endl;
+                //cout << msg << endl;
                 return false;
             }
         }
@@ -41,7 +41,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                //cerr << msg << endl;
+                //cout << msg << endl;
             }
         }
         return true;
@@ -56,7 +56,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
                 snprintf(msg, sizeof(msg),
                 "%s Queen's move is blocked.", 
                 getColorString().c_str());
-                //cerr << msg << endl;
+                //cout << msg << endl;
                 return false;
         }
     }

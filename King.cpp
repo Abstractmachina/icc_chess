@@ -14,7 +14,7 @@ bool King::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
     board[m_col][m_row] = nullptr;
     //king cannot check himself
     if (kingScan(board)) {
-        //cerr <<"Illegal move! " << getColorString() << "King cannot put himself in check.\n";
+        //cout <<"Illegal move! " << getColorString() << "King cannot put himself in check.\n";
         //undo
         board[dCol][dRow] = destContent;
         board[m_col][m_row] = this;

@@ -8,12 +8,12 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
 
     //pawn cannot move backwards
     if ((rowDif < 1 && m_color == WHITE) || (rowDif > -1 && m_color == BLACK)) {
-        //cerr << "Pawn cannot move backwards.\n";
+        //cout << "Pawn cannot move backwards.\n";
         return false;
     }
     //out of range
     if (abs(rowDif) > 2 || abs(colDif > 1)) {
-        //cerr << "Pawn Invalid Move. Out of Range.\n";
+        //cout << "Pawn Invalid Move. Out of Range.\n";
         return false;
     }
 
@@ -22,7 +22,7 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
 
     //not diagonal capture condition, pawn can only move straight forward.
     else if (dCol != m_col) {
-        //cerr <<"Invalid move. Pawn can only go straight unless capturing diagonally.\n";
+        //cout <<"Invalid move. Pawn can only go straight unless capturing diagonally.\n";
         return false;
     }
 
@@ -47,7 +47,7 @@ bool Pawn::moveOneSquare(int const& dCol, int const& dRow, ChessPiece* board[NUM
 bool Pawn::diagonalCapture(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) {
     if ((abs(dCol - m_col) == 1) && abs(dRow - m_row ) == 1) {
         if (board[dCol][dRow] == nullptr) {
-            //cerr << "Invalid move. Diagonal capture on empty tile.\n";
+            //cout << "Invalid move. Diagonal capture on empty tile.\n";
             return false;
         }
         //else do nothing and go to valid move condition
@@ -60,7 +60,7 @@ bool Pawn::diagonalCapture(int const& dCol, int const& dRow, ChessPiece* board[N
 bool Pawn::moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) {
     if (abs(dRow - m_row) == 2 && board[dCol][dRow] == nullptr) {
         if (m_firstTurn == false) {
-            //cerr << "Pawn can only move two squares on first turn.\n";
+            //cout << "Pawn can only move two squares on first turn.\n";
             return false;
         }
         //check if move blocked
@@ -70,7 +70,7 @@ bool Pawn::moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NU
         if (board[m_col][firstRowFront] != nullptr) {
             string msg = "Invalid move. Pawn is blocked by a ";
             msg += board[m_col][firstRowFront]->getType();
-            //cerr <<msg << endl;
+            //cout <<msg << endl;
             return false;
         }
         //move regular

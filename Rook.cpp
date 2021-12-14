@@ -20,7 +20,7 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                //cerr << msg << endl;
+                //cout << msg << endl;
                 return false;
             }
         }
@@ -38,7 +38,7 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                //cerr << msg << endl;
+                //cout << msg << endl;
             }
         }
         //updatePosition(dCol, dRow, board);
