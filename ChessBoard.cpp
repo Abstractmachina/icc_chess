@@ -16,7 +16,7 @@ void ChessBoard::submitMove(string source, string destination)
 {
     if (m_gameOver) exit(0);
     if (isStaleMated(m_playerTurn)) {
-        cerr << "The players are in a stalemate\n";
+        cout << "The players are in a stalemate\n";
         exit(0);
     }
 
@@ -25,7 +25,7 @@ void ChessBoard::submitMove(string source, string destination)
         checkValidInput(source, "submitMove()");
         checkValidInput(destination, "submitMove()");
     } catch ( const exception& e) {
-        cerr << e.what();
+        cout << e.what();
         return;
     }
     //convert to int
@@ -39,7 +39,7 @@ void ChessBoard::submitMove(string source, string destination)
         //check if correct player turn
         checkCorrectPlayer(selected);
     } catch (const exception& e) {
-        cerr <<e.what();
+        cout <<e.what();
         return;
     }
 
@@ -51,7 +51,7 @@ void ChessBoard::submitMove(string source, string destination)
         char msg[48];
         snprintf(msg, sizeof(msg), "%s's %s cannot move to %c%c\n",
         selected->getColorString().c_str(), selected->getType().c_str(), destination[0], destination[1]);
-        cerr << msg << "\n";
+        cout << msg << "\n";
         return;
     }
 
@@ -70,7 +70,7 @@ void ChessBoard::submitMove(string source, string destination)
             selected->getColorString().c_str());
             //reverse move
             undoMove(selected, srcPos, destPos, destContent);
-            cerr <<msg << "\n";
+            cout <<msg << "\n";
             return;
         }
         //if check resolved, unflag and commit move.
@@ -79,24 +79,24 @@ void ChessBoard::submitMove(string source, string destination)
 
     //commit move if legal
     commitMove(selected, srcPos, destPos, destContent);
-    //print();
+
     //see if new move puts opponent in check
     if (selected->opponentIsChecked(m_board)) {
         PlayerColor checkedPlayer;
         if (m_playerTurn == WHITE) {
             m_blackCheck = true;
             checkedPlayer = BLACK;
-            cerr << "Black";
+            cout << "Black";
         }
         else {
             m_whiteCheck = true;
             checkedPlayer = WHITE;
-            cerr << "White";
+            cout << "White";
         }
-        cerr << " is in check";
+        cout << " is in check";
         if (isCheckmated(checkedPlayer)) {
             m_gameOver = true;
-            cerr << "mate\n";
+            cout << "mate\n";
             exit(0);
         }
         cout <<"\n";
@@ -132,7 +132,7 @@ int src[2], int dest[2], ChessPiece*& destContent) {
         delete destContent;
         destContent = nullptr;
     }
-    cerr << "\n";
+    cout << "\n";
 }
 
 bool ChessBoard::isCheckmated(PlayerColor checkedSide) {
@@ -373,7 +373,7 @@ void ChessBoard::checkValidInput(string const& input, string const& extraInfo) c
 }
 
 void ChessBoard::resetBoard() {
-    cerr << "A new chess game is started!\n";
+    cout << "A new chess game is started!\n";
     
     //reset all members
     m_playerTurn = WHITE;
@@ -425,15 +425,11 @@ ChessPiece* ChessBoard::getPiece(int col, int row) const {
 
 void ChessBoard::setTile(ChessPiece* piece, char col, char row) {
     if (col < 'A' || col > 'H' || row < '1' || row > '8') {
-        //cerr << "setTile Error: Input "<< col << row << "is invalid.\n";
-        //cerr << "Column must be a letter A-H and row must be a number 1-8.\n";
-        string errMsg = "setTile() error: Input(";
-        errMsg += col;
-        errMsg += " ; ";
-        errMsg += row;
-        errMsg += ") is invalid.\n";
-        errMsg += "Column must be a letter A-H and row must be a number 1-8.\n";
-        throw Err_InvalidInput(errMsg);
+        char msg [48];
+        snprintf(msg, sizeof(msg),
+        "setTile() error: Input(%c ; %c) is invalid.\nColumn must be a letter A-H and row must be a number 1-8.\n",
+        col, row);
+        throw Err_InvalidInput(msg);
     }
     int colI = (int)col - 'A';
     int rowI = (int)row - '1';
@@ -445,9 +441,9 @@ void ChessBoard::print() const {
     for (int row = 0; row < NUM_TILES; row++) {
         for (int col = 0; col < NUM_TILES; col++) {
             auto* it = m_board[col][row];
-            cerr << "Pos(" << char(col + 'A') << " ; " << char(row + '1') << "): "; 
-            if (it == nullptr) cerr << "empty\n";
-            else cerr << it->getColorString() << " " << it->getType() << "\n";
+            cout << "Pos(" << char(col + 'A') << " ; " << char(row + '1') << "): "; 
+            if (it == nullptr) cout << "empty\n";
+            else cout << it->getColorString() << " " << it->getType() << "\n";
         }
     }
 }
