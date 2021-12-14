@@ -99,7 +99,7 @@ void ChessBoard::submitMove(string source, string destination)
             cerr << "mate\n";
             exit(0);
         }
-        cerr <<"\n";
+        cout <<"\n";
     }
 
     togglePlayerTurn();
