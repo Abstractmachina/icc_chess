@@ -18,7 +18,7 @@ bool Bishop::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TIL
         //updatePosition(dCol, dRow, board);
         return true;
     }
-    cerr << "Invalid Move! Bishop can only move diagonally.\n";
+    //cerr << "Invalid Move! Bishop can only move diagonally.\n";
     return false;
     //throw Err_InvalidMove("Invalid Move! Bishop can only move diagonally.\n");
 }

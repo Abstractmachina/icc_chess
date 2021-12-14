@@ -30,7 +30,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
     }
 
     //horizontal move
-    if (dRow == m_row) {
+    else if (dRow == m_row) {
         if (abs(difC) == 1) { 
             return true;
         }
@@ -46,7 +46,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
         }
         return true;
     }
-
+    else if (abs(difC) != abs(difR)) return false;
     //diagonal move
     //note: difC and difR should always be the same abs value, otherwise its not diagonal.
     for (int i = 1; i < abs(difC); i++) {
@@ -56,7 +56,7 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
                 snprintf(msg, sizeof(msg),
                 "%s Queen's move is blocked.", 
                 getColorString().c_str());
-                cerr << msg << endl;
+                //cerr << msg << endl;
                 return false;
         }
     }

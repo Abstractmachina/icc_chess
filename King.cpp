@@ -12,9 +12,9 @@ bool King::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
     ChessPiece* destContent = board[dCol][dRow];
     board[dCol][dRow] = this;
     board[m_col][m_row] = nullptr;
-    //if still in check
+    //king cannot check himself
     if (kingScan(board)) {
-        cerr <<"Illegal move. " << getColorString() << " is still in check.\n";
+        //cerr <<"Illegal move! " << getColorString() << "King cannot put himself in check.\n";
         //undo
         board[dCol][dRow] = destContent;
         board[m_col][m_row] = this;
@@ -54,8 +54,6 @@ bool King::kingScan(ChessPiece* board[NUM_TILE][NUM_TILE]) {
             if (sel != nullptr && sel->getColor() != m_color) {
                 
                 if (sel->opponentIsChecked(board)) {
-                    cerr << sel->getColorString() << " " << sel->getType();
-                    cerr << " " << colChar(i) << rowChar(j) << endl;
                     return true;
                 } 
             }

@@ -8,12 +8,12 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
 
     //pawn cannot move backwards
     if ((rowDif < 1 && m_color == WHITE) || (rowDif > -1 && m_color == BLACK)) {
-        cerr << "Pawn cannot move backwards.\n";
+        //cerr << "Pawn cannot move backwards.\n";
         return false;
     }
     //out of range
     if (abs(rowDif) > 2 || abs(colDif > 1)) {
-        cerr << "Pawn Invalid Move. Out of Range.\n";
+        //cerr << "Pawn Invalid Move. Out of Range.\n";
         return false;
     }
 
@@ -22,7 +22,7 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
 
     //not diagonal capture condition, pawn can only move straight forward.
     else if (dCol != m_col) {
-        cerr <<"Invalid move. Pawn can only go straight unless capturing diagonally.\n";
+        //cerr <<"Invalid move. Pawn can only go straight unless capturing diagonally.\n";
         return false;
     }
 
@@ -38,8 +38,7 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
 }
 
 bool Pawn::moveOneSquare(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) {
-    if (abs(dRow - m_row) == 1) {
-        //updatePosition(dCol, dRow, board);
+    if (abs(dRow - m_row) == 1 && board[dCol][dRow] == nullptr) {
         return true;
     }
     return false;
@@ -53,14 +52,13 @@ bool Pawn::diagonalCapture(int const& dCol, int const& dRow, ChessPiece* board[N
         }
         //else do nothing and go to valid move condition
         //valid diagonal capture
-        //updatePosition(dCol, dRow, board);
         return true;
     }
     return false; //diagonal capture condition not met
 }
 
 bool Pawn::moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) {
-    if (abs(dRow - m_row) == 2) {
+    if (abs(dRow - m_row) == 2 && board[dCol][dRow] == nullptr) {
         if (m_firstTurn == false) {
             cerr << "Pawn can only move two squares on first turn.\n";
             return false;
