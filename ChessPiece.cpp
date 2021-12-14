@@ -3,20 +3,6 @@
 
 using namespace std;
 
-/*
-ChessPiece* ChessPiece::getKing(ChessPiece* board[NUM_TILE][NUM_TILE]) {
-    for (int i = 0; i < NUM_TILE; i++) {
-        for (int j = 0; j < NUM_TILE; j++) {
-            auto sel = board[i][j];
-            if (   sel != nullptr && 
-                    sel->getType() == "King" && 
-                    sel->getColor() == m_color) 
-                    { return sel; }
-        }
-    }
-    return nullptr;
-}
-*/
 bool ChessPiece::isTileEnemyKing(int col, int row, ChessPiece* board[NUM_TILE][NUM_TILE]) const {
     if (col < 0 || col >= NUM_TILE || row < 0 || row >= NUM_TILE) 
         return false;

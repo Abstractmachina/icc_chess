@@ -44,6 +44,7 @@ private:
     ChessPiece* findKing(PlayerColor);
     void togglePlayerTurn();
 
+    //input processing
     void checkCorrectPlayer(ChessPiece const* p) const;
     void checkValidInput(std::string const& input, std::string const& extraInfo) const;
 

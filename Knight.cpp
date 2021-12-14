@@ -5,13 +5,11 @@ using namespace std;
 bool Knight::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]) {
     if (dCol == m_col - 2 || dCol == m_col + 2 ) {
         if (dRow == m_row -1 || dRow == m_row + 1) {
-            //updatePosition(dCol, dRow, board);
             return true;
         }
     }
     if (dCol == m_col - 1 || dCol == m_col + 1 ) {
         if (dRow == m_row - 2 || dRow == m_row + 2) {
-            //updatePosition(dCol, dRow, board);
             return true;
         }
     }

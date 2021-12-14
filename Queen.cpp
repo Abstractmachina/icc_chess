@@ -25,7 +25,6 @@ bool Queen::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE
                 return false;
             }
         }
-
         return true;
     }
 

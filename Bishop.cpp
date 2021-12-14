@@ -15,12 +15,10 @@ bool Bishop::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TIL
             if (board[m_col + stepCol * i][m_row + stepRow * i] != nullptr) return false;
         } 
         //valid move
-        //updatePosition(dCol, dRow, board);
         return true;
     }
     //cout << "Invalid Move! Bishop can only move diagonally.\n";
     return false;
-    //throw Err_InvalidMove("Invalid Move! Bishop can only move diagonally.\n");
 }
 
 bool Bishop::opponentIsChecked(ChessPiece* board[NUM_TILE][NUM_TILE]) {

@@ -20,7 +20,7 @@ bool Pawn::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
     //diagonal capture condition
     if (diagonalCapture(dCol, dRow, board)) return true;
 
-    //not diagonal capture condition, pawn can only move straight forward.
+    //if not diagonal capture condition, pawn can only move straight forward.
     else if (dCol != m_col) {
         //cout <<"Invalid move. Pawn can only go straight unless capturing diagonally.\n";
         return false;
@@ -74,7 +74,6 @@ bool Pawn::moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NU
             return false;
         }
         //move regular
-        //updatePosition(dCol, dRow, board);
         m_firstTurn = false;
         return true;
     }
@@ -83,13 +82,8 @@ bool Pawn::moveTwoSquares(int const& dCol, int const& dRow, ChessPiece* board[NU
 
 bool Pawn::opponentIsChecked(ChessPiece* board[NUM_TILE][NUM_TILE]) {
     int front = (m_color == WHITE) ? 1 : -1;
-    if (m_firstTurn) {
-        //move two squares
-        if (isEnemyKing(board[m_col][m_row+front]) == EMPTY &&
-            isEnemyKing(board[m_col][m_row+(front*2)]) == KING) return true;
-    } 
+    //diagonal capture
     if (isTileEnemyKing(m_col-1, m_row+front, board))return true;
     if (isTileEnemyKing(m_col+1, m_row+front, board))return true;
-    if (isTileEnemyKing(m_col, m_row+front, board))return true;
     return false;
 }

@@ -14,6 +14,8 @@ ChessBoard::~ChessBoard() {
 
 void ChessBoard::submitMove(string source, string destination)
 {
+    //============  check win condition =====================
+
     if (m_gameOver) exit(0);
     if (isStaleMated(m_playerTurn)) {
         cout << "The players are in a stalemate\n";
@@ -21,6 +23,7 @@ void ChessBoard::submitMove(string source, string destination)
     }
 
     //================  PROCESS INPUT   ==========================
+
     try {
         checkValidInput(source, "submitMove()");
         checkValidInput(destination, "submitMove()");
@@ -43,9 +46,9 @@ void ChessBoard::submitMove(string source, string destination)
         return;
     }
 
+
     //===============   ATTEMPT MOVE    ==========================
 
-    
     //check if valid move
     if (!selected->isValidMove(destPos[0], destPos[1], m_board)) {
         char msg[48];
@@ -94,6 +97,8 @@ void ChessBoard::submitMove(string source, string destination)
             cout << "White";
         }
         cout << " is in check";
+
+        //see if its a checkmate
         if (isCheckmated(checkedPlayer)) {
             m_gameOver = true;
             cout << "mate\n";
@@ -425,7 +430,7 @@ ChessPiece* ChessBoard::getPiece(int col, int row) const {
 
 void ChessBoard::setTile(ChessPiece* piece, char col, char row) {
     if (col < 'A' || col > 'H' || row < '1' || row > '8') {
-        char msg [48];
+        char msg [128];
         snprintf(msg, sizeof(msg),
         "setTile() error: Input(%c ; %c) is invalid.\nColumn must be a letter A-H and row must be a number 1-8.\n",
         col, row);

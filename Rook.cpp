@@ -41,7 +41,6 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
                 //cout << msg << endl;
             }
         }
-        //updatePosition(dCol, dRow, board);
         return true;
     }
     return false;
