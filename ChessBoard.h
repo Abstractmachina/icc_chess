@@ -26,9 +26,9 @@ private:
     bool m_blackCheck = false;
 
     ChessPiece* findKing(PlayerColor);
-    void peekMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& out);
-    void undoMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& o_tempHolder);
-    void commitMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& destContent);
+    void peekMove(ChessPiece*& piece, int src[2], int dest[2], ChessPiece*& out);
+    void undoMove(ChessPiece*& piece, int src[2], int dest[2], ChessPiece*& o_tempHolder);
+    void commitMove(ChessPiece*& piece, int src[2], int dest[2], ChessPiece*& destContent);
     bool isCheckmated(PlayerColor);
     bool isStaleMated(PlayerColor);
     void togglePlayerTurn();

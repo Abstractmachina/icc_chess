@@ -12,7 +12,6 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
     //vertical move
     if (dCol == m_col) {
         if (abs(difR) == 1) { 
-            //updatePosition(dCol, dRow, board);
             return true;
         }
         for (int r = 1; r < abs(difR); r++) {
@@ -21,18 +20,16 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                cerr << msg << endl;
+                //cerr << msg << endl;
                 return false;
             }
         }
-        //updatePosition(dCol, dRow, board);
         return true;
     }
 
     //horizontal move
     if (dRow == m_row) {
         if (abs(difC) == 1) { 
-            //updatePosition(dCol, dRow, board);
             return true;
         }
         for (int i = 1; i < abs(difC); i++) {
@@ -41,7 +38,7 @@ bool Rook::isValidMove(int dCol, int dRow, ChessPiece* board[NUM_TILE][NUM_TILE]
                 snprintf(msg, sizeof(msg),
                 "%s's %s cannot move to %c%c\n", 
                 getColorString().c_str(), getType().c_str(), colChar(dCol), rowChar(dRow));
-                cerr << msg << endl;
+                //cerr << msg << endl;
             }
         }
         //updatePosition(dCol, dRow, board);

@@ -41,12 +41,16 @@ void ChessBoard::submitMove(string source, string destination)
 
     //===============   ATTEMPT MOVE    ==========================
 
+    if (isStaleMated(m_playerTurn)) {
+        cerr << "The players are in a stalemate\n";
+        exit(0);
+    }
     //check if valid move
     if (!selected->isValidMove(destPos[0], destPos[1], m_board)) {
         char msg[48];
         snprintf(msg, sizeof(msg), "%s's %s cannot move to %c%c\n",
         selected->getColorString().c_str(), selected->getType().c_str(), destination[0], destination[1]);
-        cerr << msg << endl;
+        cerr << msg << "\n";
         return;
     }
 
@@ -65,7 +69,7 @@ void ChessBoard::submitMove(string source, string destination)
             selected->getColorString().c_str());
             //reverse move
             undoMove(selected, srcPos, destPos, destContent);
-            cerr <<msg << endl;
+            cerr <<msg << "\n";
             return;
         }
         //if check resolved, unflag and commit move.
@@ -94,24 +98,24 @@ void ChessBoard::submitMove(string source, string destination)
             cerr << "mate\n";
             exit(0);
         }
-        cerr <<endl;
+        cerr <<"\n";
     }
 
     togglePlayerTurn();
 }
 
-void ChessBoard::peekMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& destContent) {
+void ChessBoard::peekMove(ChessPiece*& piece, int src[2], int dest[2], ChessPiece*& destContent) {
     destContent = m_board[dest[0]][dest[1]];
     m_board[dest[0]][dest[1]] = piece;
     m_board[src[0]][src[1]] = nullptr;
 }
 
-void ChessBoard::undoMove(ChessPiece* piece, int src[2], int dest[2], ChessPiece*& destContent) {
+void ChessBoard::undoMove(ChessPiece*& piece, int src[2], int dest[2], ChessPiece*& destContent) {
     m_board[src[0]][src[1]] = piece;
     m_board[dest[0]][dest[1]] = destContent;
 }
 
-void ChessBoard::commitMove(ChessPiece* piece, 
+void ChessBoard::commitMove(ChessPiece*& piece, 
 int src[2], int dest[2], ChessPiece*& destContent) {
     printf("%s's %s moves from %c%c to %c%c", 
             piece->getColorString().c_str(), 
@@ -127,7 +131,7 @@ int src[2], int dest[2], ChessPiece*& destContent) {
         delete destContent;
         destContent = nullptr;
     }
-    cerr << endl;
+    cerr << "\n";
 }
 
 bool ChessBoard::isCheckmated(PlayerColor checkedSide) {
@@ -280,12 +284,54 @@ bool ChessBoard::isCheckmated(PlayerColor checkedSide) {
 bool ChessBoard::isStaleMated(PlayerColor player) {
     /*
     Rules of stalemate
-    1) king is not check
+    1) king is not in check
     2) there are no possible moves player can make
     3)only two kings are left
     */
+    //first verify the player king is not in check
+    if (( player == WHITE && m_whiteCheck) ||
+    (player == BLACK && m_blackCheck)) return false;
 
-   return false;
+   //check if there are only kings left
+    vector<ChessPiece*> pieces;
+    for (int i =0; i < NUM_TILES; i++) {
+        for (int j = 0; j < NUM_TILES; j++) {
+            ChessPiece* sel = m_board[i][j];
+            if (sel != nullptr) pieces.push_back(sel);
+        }
+    }
+    if (pieces.size() == 2) {
+        int kingCount = 0;
+        for (auto p : pieces) {
+            if (p->getType() == "King") kingCount++;
+        }
+        if (kingCount == 2) return true;
+    }
+    //more than kings left -> check for possible moves
+    auto king = findKing(player);
+    for (auto p : pieces) {
+        if (p->getColor() != player) continue;
+        for (int r = 0; r < NUM_TILES; r++) {
+            for (int c = 0; c < NUM_TILES; c++) {
+
+                //first check if its valid move
+                if (p->isValidMove(c, r, m_board)){
+                    //if valid, peek and see if king will be in check
+                    int src[2] = {p->getC(), p->getR()};
+                    int dest[2] = {c, r};
+                    ChessPiece* destContent = nullptr;
+                    peekMove(p, src, dest, destContent);
+                    //if after move, player not in check, no stalemate
+                    if (!king->kingScan(m_board)) {
+                        undoMove(p, src, dest, destContent);
+                        return false;
+                    }
+                    undoMove(p, src, dest, destContent);
+                }
+            }
+        }
+    }
+    return true;
 }
 
 ChessPiece* ChessBoard::findKing(PlayerColor color) {
@@ -400,7 +446,7 @@ void ChessBoard::print() const {
             auto* it = m_board[col][row];
             cerr << "Pos(" << char(col + 'A') << " ; " << char(row + '1') << "): "; 
             if (it == nullptr) cerr << "empty\n";
-            else cerr << it->getColorString() << " " << it->getType() << endl;
+            else cerr << it->getColorString() << " " << it->getType() << "\n";
         }
     }
 }
