@@ -15,6 +15,10 @@ ChessBoard::~ChessBoard() {
 void ChessBoard::submitMove(string source, string destination)
 {
     if (m_gameOver) exit(0);
+    if (isStaleMated(m_playerTurn)) {
+        cerr << "The players are in a stalemate\n";
+        exit(0);
+    }
 
     //================  PROCESS INPUT   ==========================
     try {
@@ -41,10 +45,7 @@ void ChessBoard::submitMove(string source, string destination)
 
     //===============   ATTEMPT MOVE    ==========================
 
-    if (isStaleMated(m_playerTurn)) {
-        cerr << "The players are in a stalemate\n";
-        exit(0);
-    }
+    
     //check if valid move
     if (!selected->isValidMove(destPos[0], destPos[1], m_board)) {
         char msg[48];
